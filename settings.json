@@ -1,0 +1,10 @@
+{
+  "lastChangelogVersion": "0.75.5",
+  "defaultProvider": "fireworks",
+  "defaultModel": "accounts/fireworks/models/deepseek-v4-pro",
+  "defaultThinkingLevel": "medium",
+  "theme": "sunlight",
+  "packages": [
+    "npm:pi-web-access"
+  ]
+}
