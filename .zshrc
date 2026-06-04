@@ -63,4 +63,4 @@ gamp() {
 
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
-eval "$(fzf --zsh)"
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
