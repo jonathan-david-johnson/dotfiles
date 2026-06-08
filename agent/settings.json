@@ -1,0 +1,11 @@
+{
+  "lastChangelogVersion": "0.79.0",
+  "defaultProvider": "fireworks",
+  "defaultModel": "accounts/fireworks/models/kimi-k2p6",
+  "defaultThinkingLevel": "medium",
+  "theme": "sunlight",
+  "packages": [
+    "npm:pi-web-access",
+    "npm:@dreki-gg/pi-context7"
+  ]
+}
