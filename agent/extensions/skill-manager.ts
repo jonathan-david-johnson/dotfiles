@@ -1,9 +1,14 @@
+<<<<<<< HEAD:agent/extensions/skill-manager.ts
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { getSettingsListTheme } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
 import { Container, type SettingItem, SettingsList } from "@earendil-works/pi-tui";
 import * as fs from "node:fs";
 import * as path from "node:path";
+=======
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import { Type } from "typebox";
+>>>>>>> cc0cccdd7ad714c098e61ff1f772c0f27da28d11:extensions/skill-manager.ts
 
 // ── Types ───────────────────────────────────────────────────
 
@@ -57,6 +62,7 @@ function filterPromptSkills(prompt: string, enabled: Set<string>): string {
   );
 }
 
+<<<<<<< HEAD:agent/extensions/skill-manager.ts
 /** Strip surrounding quotes from command args. */
 function cleanArgs(args: string): string {
   return args.trim().replace(/^["']|["']$/g, "").trim();
@@ -100,6 +106,9 @@ function scanSkillDirectories(): SkillInfo[] {
 }
 
 /** Populate catalog from system prompt options, string, or filesystem. */
+=======
+/** Populate catalog from system prompt options or string. */
+>>>>>>> cc0cccdd7ad714c098e61ff1f772c0f27da28d11:extensions/skill-manager.ts
 function ensureCatalog(
   skills?: Array<{ name: string; description: string; location?: string }>,
   prompt?: string
@@ -120,10 +129,13 @@ function ensureCatalog(
     catalog = parseSkillsFromPrompt(prompt);
   }
 
+<<<<<<< HEAD:agent/extensions/skill-manager.ts
   if (catalog.length === 0) {
     catalog = scanSkillDirectories();
   }
 
+=======
+>>>>>>> cc0cccdd7ad714c098e61ff1f772c0f27da28d11:extensions/skill-manager.ts
   for (const name of DEFAULT_ENABLED) {
     if (catalog.find((c) => c.name === name)) {
       enabledNames.add(name);
@@ -141,10 +153,17 @@ function saveState(pi: ExtensionAPI) {
 // ── Extension ───────────────────────────────────────────────
 
 export default function (pi: ExtensionAPI) {
+<<<<<<< HEAD:agent/extensions/skill-manager.ts
   // ── Restore state on session start / tree navigation ─────
   function restoreFromBranch(ctx: ExtensionContext) {
     let lastState: string[] | undefined;
     for (const entry of ctx.sessionManager.getBranch()) {
+=======
+  // ── Restore state on session start ────────────────────────
+  pi.on("session_start", async (event, ctx) => {
+    let lastState: string[] | undefined;
+    for (const entry of ctx.sessionManager.getEntries()) {
+>>>>>>> cc0cccdd7ad714c098e61ff1f772c0f27da28d11:extensions/skill-manager.ts
       if (
         entry.type === "custom" &&
         entry.customType === "skill-manager-state"
@@ -155,11 +174,16 @@ export default function (pi: ExtensionAPI) {
         }
       }
     }
+<<<<<<< HEAD:agent/extensions/skill-manager.ts
+=======
+
+>>>>>>> cc0cccdd7ad714c098e61ff1f772c0f27da28d11:extensions/skill-manager.ts
     if (lastState) {
       enabledNames = new Set(lastState);
     } else {
       enabledNames = new Set(DEFAULT_ENABLED);
     }
+<<<<<<< HEAD:agent/extensions/skill-manager.ts
   }
 
   pi.on("session_start", async (_event, ctx) => {
@@ -167,15 +191,24 @@ export default function (pi: ExtensionAPI) {
     if (ctx.mode === "tui") {
       ctx.ui.notify(
         `Skill manager: ${enabledNames.size} enabled`,
+=======
+
+    if (ctx.mode === "tui") {
+      ctx.ui.notify(
+        `Skill manager: ${enabledNames.size} enabled, ${catalog.length - enabledNames.size} hidden`,
+>>>>>>> cc0cccdd7ad714c098e61ff1f772c0f27da28d11:extensions/skill-manager.ts
         "info"
       );
     }
   });
 
+<<<<<<< HEAD:agent/extensions/skill-manager.ts
   pi.on("session_tree", async (_event, ctx) => {
     restoreFromBranch(ctx);
   });
 
+=======
+>>>>>>> cc0cccdd7ad714c098e61ff1f772c0f27da28d11:extensions/skill-manager.ts
   // ── Filter system prompt on every turn ──────────────────
   pi.on("before_agent_start", async (event, _ctx) => {
     ensureCatalog(event.systemPromptOptions?.skills, event.systemPrompt);
@@ -273,6 +306,7 @@ export default function (pi: ExtensionAPI) {
   });
 
   pi.registerCommand("skill-list", {
+<<<<<<< HEAD:agent/extensions/skill-manager.ts
     description: "List all skills — ↑↓ navigate • Enter toggle • Esc close",
     handler: async (_args, ctx) => {
       if (ctx.mode !== "tui") {
@@ -280,10 +314,15 @@ export default function (pi: ExtensionAPI) {
         return;
       }
 
+=======
+    description: "List all skills with enabled/disabled status",
+    handler: async (_args, ctx) => {
+>>>>>>> cc0cccdd7ad714c098e61ff1f772c0f27da28d11:extensions/skill-manager.ts
       ensureCatalog(
         ctx.getSystemPromptOptions?.().skills,
         ctx.getSystemPrompt?.()
       );
+<<<<<<< HEAD:agent/extensions/skill-manager.ts
 
       await ctx.ui.custom<void>((tui, theme, _kb, done) => {
         const items: SettingItem[] = catalog.map((s) => ({
@@ -351,6 +390,16 @@ export default function (pi: ExtensionAPI) {
           },
         };
       });
+=======
+      const lines = catalog.map((s) => {
+        const status = enabledNames.has(s.name) ? "✓" : " ";
+        return `[${status}] ${s.name}`;
+      });
+      ctx.ui.notify(
+        `${catalog.length} total, ${enabledNames.size} enabled:\n${lines.join("\n")}`,
+        "info"
+      );
+>>>>>>> cc0cccdd7ad714c098e61ff1f772c0f27da28d11:extensions/skill-manager.ts
     },
   });
 
