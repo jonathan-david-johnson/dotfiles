@@ -5,6 +5,7 @@
   "defaultThinkingLevel": "medium",
   "theme": "sunlight",
   "packages": [
-    "npm:pi-web-access"
+    "npm:pi-web-access",
+    "npm:@dreki-gg/pi-context7"
   ]
 }
