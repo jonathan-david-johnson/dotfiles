@@ -1,14 +1,8 @@
-<<<<<<< HEAD:agent/extensions/skill-manager.ts
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { getSettingsListTheme } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
-import { Container, type SettingItem, SettingsList } from "@earendil-works/pi-tui";
+import { matchesKey, Key, parseKey, truncateToWidth } from "@earendil-works/pi-tui";
 import * as fs from "node:fs";
 import * as path from "node:path";
-=======
-import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { Type } from "typebox";
->>>>>>> cc0cccdd7ad714c098e61ff1f772c0f27da28d11:extensions/skill-manager.ts
 
 // ── Types ───────────────────────────────────────────────────
 
@@ -62,22 +56,31 @@ function filterPromptSkills(prompt: string, enabled: Set<string>): string {
   );
 }
 
-<<<<<<< HEAD:agent/extensions/skill-manager.ts
 /** Strip surrounding quotes from command args. */
 function cleanArgs(args: string): string {
   return args.trim().replace(/^["']|["']$/g, "").trim();
 }
 
-/** Scan skill directories on disk as a fallback. */
+/** Normalize a skill file location from system prompt/options. */
+function normalizeLocation(location: string): string {
+  if (!location) return "";
+  const home = process.env.HOME ?? "";
+  if (location === "~") return home;
+  if (location.startsWith("~/")) return path.join(home, location.slice(2));
+  return path.isAbsolute(location) ? location : path.resolve(location);
+}
+
+/** Scan skill directories on disk as a fallback and to resolve SKILL.md paths. */
 function scanSkillDirectories(): SkillInfo[] {
   const home = process.env.HOME ?? "";
+  // Match pi's preference order: ~/.pi/agent/skills wins over legacy ~/.agents/skills.
   const dirs = [
-    path.join(home, ".agents", "skills"),
     path.join(home, ".pi", "agent", "skills"),
+    path.join(home, ".agents", "skills"),
     path.join(home, ".pi", "skills"),
   ];
 
-  const skills: SkillInfo[] = [];
+  const byName = new Map<string, SkillInfo>();
   for (const dir of dirs) {
     if (!fs.existsSync(dir)) continue;
     const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -94,48 +97,83 @@ function scanSkillDirectories(): SkillInfo[] {
         const descMatch = fm.match(/^description:\s*(.+)$/m);
         const name = nameMatch?.[1]?.trim();
         const description = descMatch?.[1]?.trim();
-        if (name && description) {
-          skills.push({ name, description, location: skillMd });
+        if (name && description && !byName.has(name)) {
+          byName.set(name, { name, description, location: skillMd });
         }
       } catch {
         // ignore unreadable
       }
     }
   }
-  return skills;
+  return Array.from(byName.values());
+}
+
+/** Fill missing/invalid catalog locations from disk. */
+function hydrateCatalogLocations() {
+  const diskByName = new Map(scanSkillDirectories().map((s) => [s.name, s]));
+  catalog = catalog.map((skill) => {
+    const normalized = normalizeLocation(skill.location);
+    if (normalized && fs.existsSync(normalized)) {
+      return { ...skill, location: normalized };
+    }
+    const disk = diskByName.get(skill.name);
+    return disk
+      ? {
+          ...skill,
+          description: skill.description || disk.description,
+          location: disk.location,
+        }
+      : { ...skill, location: normalized };
+  });
 }
 
 /** Populate catalog from system prompt options, string, or filesystem. */
-=======
-/** Populate catalog from system prompt options or string. */
->>>>>>> cc0cccdd7ad714c098e61ff1f772c0f27da28d11:extensions/skill-manager.ts
 function ensureCatalog(
   skills?: Array<{ name: string; description: string; location?: string }>,
   prompt?: string
 ) {
-  if (catalog.length > 0) return;
+  if (catalog.length > 0) {
+    hydrateCatalogLocations();
+    return;
+  }
+
+  const byName = new Map<string, SkillInfo>();
 
   if (skills) {
     for (const s of skills) {
-      catalog.push({
+      byName.set(s.name, {
         name: s.name,
         description: s.description,
-        location: s.location ?? "",
+        location: normalizeLocation(s.location ?? ""),
       });
     }
   }
 
-  if (catalog.length === 0 && prompt) {
-    catalog = parseSkillsFromPrompt(prompt);
+  if (prompt) {
+    for (const s of parseSkillsFromPrompt(prompt)) {
+      if (!byName.has(s.name)) {
+        byName.set(s.name, { ...s, location: normalizeLocation(s.location) });
+      }
+    }
   }
 
-<<<<<<< HEAD:agent/extensions/skill-manager.ts
-  if (catalog.length === 0) {
-    catalog = scanSkillDirectories();
+  for (const s of scanSkillDirectories()) {
+    const existing = byName.get(s.name);
+    if (!existing) {
+      byName.set(s.name, s);
+    } else if (!existing.location || !fs.existsSync(existing.location)) {
+      byName.set(s.name, {
+        ...existing,
+        description: existing.description || s.description,
+        location: s.location,
+      });
+    }
   }
 
-=======
->>>>>>> cc0cccdd7ad714c098e61ff1f772c0f27da28d11:extensions/skill-manager.ts
+  catalog = Array.from(byName.values()).sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
+
   for (const name of DEFAULT_ENABLED) {
     if (catalog.find((c) => c.name === name)) {
       enabledNames.add(name);
@@ -153,17 +191,10 @@ function saveState(pi: ExtensionAPI) {
 // ── Extension ───────────────────────────────────────────────
 
 export default function (pi: ExtensionAPI) {
-<<<<<<< HEAD:agent/extensions/skill-manager.ts
   // ── Restore state on session start / tree navigation ─────
   function restoreFromBranch(ctx: ExtensionContext) {
     let lastState: string[] | undefined;
     for (const entry of ctx.sessionManager.getBranch()) {
-=======
-  // ── Restore state on session start ────────────────────────
-  pi.on("session_start", async (event, ctx) => {
-    let lastState: string[] | undefined;
-    for (const entry of ctx.sessionManager.getEntries()) {
->>>>>>> cc0cccdd7ad714c098e61ff1f772c0f27da28d11:extensions/skill-manager.ts
       if (
         entry.type === "custom" &&
         entry.customType === "skill-manager-state"
@@ -174,16 +205,12 @@ export default function (pi: ExtensionAPI) {
         }
       }
     }
-<<<<<<< HEAD:agent/extensions/skill-manager.ts
-=======
 
->>>>>>> cc0cccdd7ad714c098e61ff1f772c0f27da28d11:extensions/skill-manager.ts
     if (lastState) {
       enabledNames = new Set(lastState);
     } else {
       enabledNames = new Set(DEFAULT_ENABLED);
     }
-<<<<<<< HEAD:agent/extensions/skill-manager.ts
   }
 
   pi.on("session_start", async (_event, ctx) => {
@@ -191,24 +218,15 @@ export default function (pi: ExtensionAPI) {
     if (ctx.mode === "tui") {
       ctx.ui.notify(
         `Skill manager: ${enabledNames.size} enabled`,
-=======
-
-    if (ctx.mode === "tui") {
-      ctx.ui.notify(
-        `Skill manager: ${enabledNames.size} enabled, ${catalog.length - enabledNames.size} hidden`,
->>>>>>> cc0cccdd7ad714c098e61ff1f772c0f27da28d11:extensions/skill-manager.ts
         "info"
       );
     }
   });
 
-<<<<<<< HEAD:agent/extensions/skill-manager.ts
   pi.on("session_tree", async (_event, ctx) => {
     restoreFromBranch(ctx);
   });
 
-=======
->>>>>>> cc0cccdd7ad714c098e61ff1f772c0f27da28d11:extensions/skill-manager.ts
   // ── Filter system prompt on every turn ──────────────────
   pi.on("before_agent_start", async (event, _ctx) => {
     ensureCatalog(event.systemPromptOptions?.skills, event.systemPrompt);
@@ -306,100 +324,286 @@ export default function (pi: ExtensionAPI) {
   });
 
   pi.registerCommand("skill-list", {
-<<<<<<< HEAD:agent/extensions/skill-manager.ts
-    description: "List all skills — ↑↓ navigate • Enter toggle • Esc close",
+    description: "List all skills — / search • ↑↓ navigate • Enter toggle • → view • Esc close",
     handler: async (_args, ctx) => {
       if (ctx.mode !== "tui") {
         ctx.ui.notify("/skill-list requires TUI mode", "error");
         return;
       }
 
-=======
-    description: "List all skills with enabled/disabled status",
-    handler: async (_args, ctx) => {
->>>>>>> cc0cccdd7ad714c098e61ff1f772c0f27da28d11:extensions/skill-manager.ts
       ensureCatalog(
         ctx.getSystemPromptOptions?.().skills,
         ctx.getSystemPrompt?.()
       );
-<<<<<<< HEAD:agent/extensions/skill-manager.ts
 
       await ctx.ui.custom<void>((tui, theme, _kb, done) => {
-        const items: SettingItem[] = catalog.map((s) => ({
-          id: s.name,
-          label: s.name,
-          currentValue: enabledNames.has(s.name) ? "enabled" : "disabled",
-          values: ["enabled", "disabled"],
-          description:
-            s.description.length > 100
-              ? s.description.slice(0, 100) + "…"
-              : s.description,
-        }));
+        let selected = 0;
+        let mode: "list" | "detail" = "list";
+        let detailContent = "";
+        let detailSkill: SkillInfo | undefined;
+        let detailScroll = 0;
+        let searchMode = false;
+        let searchQuery = "";
+        const skillContentCache = new Map<string, string>();
 
-        const container = new Container();
-        container.addChild(
-          new (class {
-            render(_width: number) {
-              return [
-                theme.fg(
-                  "accent",
-                  theme.bold("Skills — ↑↓ navigate • Enter toggle • Esc close")
-                ),
-                "",
-              ];
-            }
-            invalidate() {}
-          })()
-        );
+        const LIST_VISIBLE = 12;
 
-        const settingsList = new SettingsList(
-          items,
-          Math.min(items.length + 2, 20),
-          getSettingsListTheme(),
-          (id, newValue) => {
-            if (newValue === "enabled") {
-              enabledNames.add(id);
+        function wrapText(text: string, width: number): string[] {
+          const safeWidth = Math.max(1, width);
+          const words = text.trim().split(/\s+/).filter(Boolean);
+          const lines: string[] = [];
+          let current = "";
+          for (const word of words) {
+            if (word.length > safeWidth) {
+              if (current) {
+                lines.push(current);
+                current = "";
+              }
+              for (let i = 0; i < word.length; i += safeWidth) {
+                lines.push(word.slice(i, i + safeWidth));
+              }
+            } else if (!current) {
+              current = word;
+            } else if (current.length + 1 + word.length > safeWidth) {
+              lines.push(current);
+              current = word;
             } else {
-              enabledNames.delete(id);
+              current = `${current} ${word}`;
             }
-            // Keep items array in sync for re-renders
-            const item = items.find((i) => i.id === id);
-            if (item) {
-              item.currentValue = newValue;
-            }
-            saveState(pi);
-            tui.requestRender();
-          },
-          () => {
-            done(undefined);
           }
-        );
+          if (current) {
+            lines.push(current);
+          }
+          return lines;
+        }
 
-        container.addChild(settingsList);
+        function readSkillContent(skill: SkillInfo): string {
+          const cacheKey = skill.location || skill.name;
+          const cached = skillContentCache.get(cacheKey);
+          if (cached !== undefined) return cached;
+          if (!skill.location) {
+            skillContentCache.set(cacheKey, "");
+            return "";
+          }
+          try {
+            const content = fs.readFileSync(skill.location, "utf-8");
+            skillContentCache.set(cacheKey, content);
+            return content;
+          } catch {
+            skillContentCache.set(cacheKey, "");
+            return "";
+          }
+        }
 
-        return {
-          render(width: number) {
-            return container.render(width);
-          },
-          invalidate() {
-            container.invalidate();
-          },
-          handleInput(data: string) {
-            settingsList.handleInput?.(data);
-            tui.requestRender();
-          },
-        };
+        function filteredSkills(): SkillInfo[] {
+          const q = searchQuery.trim().toLowerCase();
+          if (!q) return catalog;
+          return catalog.filter((skill) => {
+            if (skill.name.toLowerCase().includes(q)) return true;
+            return readSkillContent(skill).toLowerCase().includes(q);
+          });
+        }
+
+        function selectedSkillFromList(): SkillInfo | undefined {
+          const list = filteredSkills();
+          if (list.length === 0) return undefined;
+          selected = Math.min(Math.max(0, selected), list.length - 1);
+          return list[selected];
+        }
+
+        function renderList(width: number): string[] {
+          const header = [
+            truncateToWidth(
+              theme.fg(
+                "accent",
+                theme.bold(searchMode
+                  ? `Search: /${searchQuery}`
+                  : "Skills — / search • ↑↓ navigate • Enter toggle • → view/v • Esc close")
+              ),
+              width
+            ),
+            "",
+          ];
+
+          if (catalog.length === 0) {
+            return [
+              ...header,
+              theme.fg("muted", "No skills found. Check ~/.pi/agent/skills or ~/.agents/skills."),
+            ].map((line) => truncateToWidth(line, width));
+          }
+
+          const list = filteredSkills();
+
+          if (list.length === 0) {
+            return [
+              ...header,
+              theme.fg("muted", `No skills match /${searchQuery}`),
+            ].map((line) => truncateToWidth(line, width));
+          }
+
+          selected = Math.min(Math.max(0, selected), list.length - 1);
+
+          // Scroll window so selected item is always visible
+          const maxStart = Math.max(0, list.length - LIST_VISIBLE);
+          const windowStart = Math.min(Math.max(0, selected - Math.floor(LIST_VISIBLE / 2)), maxStart);
+          const windowEnd = Math.min(list.length, windowStart + LIST_VISIBLE);
+          const visibleSkills = list.slice(windowStart, windowEnd);
+
+          const items = visibleSkills.map((skill, i) => {
+            const actualIndex = windowStart + i;
+            const prefix = actualIndex === selected ? "> " : "  ";
+            const status = enabledNames.has(skill.name) ? "✓" : " ";
+            return truncateToWidth(
+              `${prefix}[${status}] ${skill.name}`,
+              width
+            );
+          });
+
+          const scrollInfo =
+            list.length > LIST_VISIBLE || searchQuery.trim()
+              ? [
+                  truncateToWidth(
+                    theme.fg(
+                      "dim",
+                      searchQuery.trim()
+                        ? `  ${windowStart + 1}-${windowEnd} of ${list.length} matches for /${searchQuery}`
+                        : `  ${windowStart + 1}-${windowEnd} of ${list.length}`
+                    ),
+                    width
+                  ),
+                ]
+              : [];
+
+          // Description area at bottom
+          const selectedSkill = list[selected];
+          const descLines = selectedSkill
+            ? wrapText(selectedSkill.description, Math.max(1, width - 2))
+            : [];
+          const descArea = [
+            "",
+            truncateToWidth(theme.fg("dim", "─".repeat(width)), width),
+            ...descLines
+              .slice(0, 5)
+              .map((line) => truncateToWidth(theme.fg("muted", `  ${line}`), width)),
+          ];
+
+          return [...header, ...items, ...scrollInfo, ...descArea];
+        }
+
+        function renderDetail(width: number): string[] {
+          const lines = detailContent.split("\n").map((line) =>
+            truncateToWidth(line, width)
+          );
+          const header = [
+            theme.fg(
+              "accent",
+              theme.bold(truncateToWidth(`← Back  •  ${detailSkill?.name ?? "skill"}  •  ↑↓ scroll`, width))
+            ),
+            "",
+          ];
+          const footer = [
+            "",
+            theme.fg(
+              "dim",
+              `line ${detailScroll + 1}-${Math.min(detailScroll + 25, lines.length)} of ${lines.length}`
+            ),
+          ];
+          const visible = lines.slice(detailScroll, detailScroll + 25);
+          return [...header, ...visible, ...footer];
+        }
+
+        function render(width: number): string[] {
+          if (mode === "list") {
+            return renderList(width);
+          } else {
+            return renderDetail(width);
+          }
+        }
+
+        function handleInput(data: string): void {
+          const key = parseKey(data);
+
+          if (mode === "list") {
+            const list = filteredSkills();
+
+            if (searchMode) {
+              if (matchesKey(data, Key.up)) {
+                selected = Math.max(0, selected - 1);
+              } else if (matchesKey(data, Key.down)) {
+                selected = Math.min(list.length - 1, selected + 1);
+              } else if (matchesKey(data, Key.escape)) {
+                searchMode = false;
+                searchQuery = "";
+                selected = 0;
+              } else if (matchesKey(data, Key.enter)) {
+                searchMode = false;
+              } else if (matchesKey(data, Key.backspace)) {
+                searchQuery = searchQuery.slice(0, -1);
+                selected = 0;
+              } else if (key === "space") {
+                searchQuery += " ";
+                selected = 0;
+              } else if (key && key.length === 1) {
+                searchQuery += key;
+                selected = 0;
+              }
+              tui.requestRender();
+              return;
+            }
+
+            if (matchesKey(data, Key.up)) {
+              selected = Math.max(0, selected - 1);
+            } else if (matchesKey(data, Key.down)) {
+              selected = Math.min(list.length - 1, selected + 1);
+            } else if (matchesKey(data, Key.slash) || key === "/") {
+              searchMode = true;
+              searchQuery = "";
+              selected = 0;
+            } else if (matchesKey(data, Key.enter)) {
+              const skill = selectedSkillFromList();
+              if (!skill) return;
+              if (enabledNames.has(skill.name)) {
+                enabledNames.delete(skill.name);
+              } else {
+                enabledNames.add(skill.name);
+              }
+              saveState(pi);
+            } else if (matchesKey(data, Key.right) || key === "right" || key === "v") {
+              const skill = selectedSkillFromList();
+              if (!skill) return;
+              detailSkill = skill;
+              detailContent = readSkillContent(skill) || `Error: could not read ${skill.location || "SKILL.md"}`;
+              detailScroll = 0;
+              mode = "detail";
+            } else if (matchesKey(data, Key.escape)) {
+              if (searchQuery.trim()) {
+                searchQuery = "";
+                selected = 0;
+              } else {
+                done(undefined);
+                return;
+              }
+            }
+          } else if (mode === "detail") {
+            if (matchesKey(data, Key.left) || key === "left" || key === "v" || matchesKey(data, Key.escape)) {
+              mode = "list";
+            } else if (matchesKey(data, Key.up)) {
+              detailScroll = Math.max(0, detailScroll - 1);
+            } else if (matchesKey(data, Key.down)) {
+              const lines = detailContent.split("\n");
+              const maxScroll = Math.max(0, lines.length - 25);
+              detailScroll = Math.min(maxScroll, detailScroll + 1);
+            }
+          }
+          tui.requestRender();
+        }
+
+        function invalidate(): void {
+          // no-op
+        }
+
+        return { render, invalidate, handleInput };
       });
-=======
-      const lines = catalog.map((s) => {
-        const status = enabledNames.has(s.name) ? "✓" : " ";
-        return `[${status}] ${s.name}`;
-      });
-      ctx.ui.notify(
-        `${catalog.length} total, ${enabledNames.size} enabled:\n${lines.join("\n")}`,
-        "info"
-      );
->>>>>>> cc0cccdd7ad714c098e61ff1f772c0f27da28d11:extensions/skill-manager.ts
     },
   });
 
