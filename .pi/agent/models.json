@@ -1,0 +1,26 @@
+{
+  "providers": {
+    "fireworks": {
+      "models": [
+        {
+          "id": "accounts/fireworks/models/kimi-k2p6",
+          "name": "Kimi K2.6 (Fireworks)",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 262144,
+          "maxTokens": 16384,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
+        },
+        {
+          "id": "accounts/fireworks/models/gemma-4-31b-it",
+          "name": "Gemma 4 31B (Fireworks)",
+          "reasoning": false,
+          "input": ["text", "image"],
+          "contextWindow": 131072,
+          "maxTokens": 16384,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
+        }
+      ]
+    }
+  }
+}
