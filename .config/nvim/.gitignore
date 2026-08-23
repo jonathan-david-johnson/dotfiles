@@ -1,0 +1,15 @@
+# Backup files
+*.backup*
+*.bak*
+
+# Lazy.nvim
+lazy-lock.json
+
+# Neovim
+.luarc.json
+
+# macOS
+.DS_Store
+
+# LSP
+.jdtls/
