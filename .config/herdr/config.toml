@@ -1,0 +1,9 @@
+onboarding = false
+
+[keys]
+cycle_pane_next = "prefix+tab"
+last_pane = "prefix+shift+tab"
+
+[theme]
+name = "tokyo-night"
+auto_switch = false
