@@ -35,10 +35,10 @@ export default function (pi: ExtensionAPI) {
     name: "ocr_image",
     label: "OCR Image",
     description:
-      "Extract text from an image file using Tesseract OCR. Use this to read error messages, screenshots, code snippets, logs, or any text captured in an image.",
-    promptSnippet: "Extract text from an image file using OCR",
+      "Extract text from an image file using Tesseract OCR, only when the user explicitly asks to OCR, extract, transcribe, or read text from an image.",
+    promptSnippet: "Extract text from an image when the user explicitly requests OCR",
     promptGuidelines: [
-      "Use ocr_image to read text from screenshots, error dialogs, terminal output, or any image containing text the user shares.",
+      "Use ocr_image only when the user explicitly asks to OCR, extract, transcribe, or read text from an image. Do not call it merely because the user shared an image.",
     ],
     parameters: Type.Object({
       path: Type.String({ description: "Path to the image file to OCR" }),

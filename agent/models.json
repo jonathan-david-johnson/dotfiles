@@ -1,10 +1,78 @@
 {
   "providers": {
+    "ollama": {
+      "baseUrl": "http://100.69.55.83:11434/v1",
+      "api": "openai-completions",
+      "apiKey": "ollama",
+      "compat": {
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": false
+      },
+      "models": [
+        {
+          "id": "llama3.1:8b",
+          "name": "Llama 3.1 8B (Ollama)",
+          "reasoning": false,
+          "input": ["text"],
+          "contextWindow": 128000,
+          "maxTokens": 8192,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
+        },
+        {
+          "id": "gemma4-26b-gpu:latest",
+          "name": "Gemma 4 26B GPU (Ollama)",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 262144,
+          "maxTokens": 16384,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 },
+          "compat": { "supportsReasoningEffort": true }
+        },
+        {
+          "id": "gemma4-26b-cpu:latest",
+          "name": "Gemma 4 26B CPU (Ollama)",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 262144,
+          "maxTokens": 16384,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 },
+          "compat": { "supportsReasoningEffort": true }
+        },
+        {
+          "id": "gemma4:26b",
+          "name": "Gemma 4 26B (Ollama)",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 262144,
+          "maxTokens": 16384,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 },
+          "compat": { "supportsReasoningEffort": true }
+        },
+        {
+          "id": "gemma4:e4b",
+          "name": "Gemma 4 E4B (Ollama)",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 131072,
+          "maxTokens": 16384,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
+        },
+        {
+          "id": "gemma3:4b",
+          "name": "Gemma 3 4B (Ollama)",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 32768,
+          "maxTokens": 8192,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
+        }
+      ]
+    },
     "fireworks": {
       "models": [
         {
-          "id": "accounts/fireworks/models/kimi-k2p6",
-          "name": "Kimi K2.6 (Fireworks)",
+          "id": "accounts/fireworks/models/deepseek-v4-pro",
+          "name": "DeepSeek V4 Pro (Fireworks)",
           "reasoning": true,
           "input": ["text", "image"],
           "contextWindow": 262144,
@@ -12,11 +80,20 @@
           "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
         },
         {
-          "id": "accounts/fireworks/models/gemma-4-31b-it",
-          "name": "Gemma 4 31B (Fireworks)",
-          "reasoning": false,
+          "id": "accounts/fireworks/models/deepseek-v4-pro-0813",
+          "name": "DeepSeek V4 Pro 0813 (Fireworks)",
+          "reasoning": true,
           "input": ["text", "image"],
-          "contextWindow": 131072,
+          "contextWindow": 262144,
+          "maxTokens": 16384,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
+        },
+        {
+          "id": "accounts/fireworks/models/kimi-k2p7-code",
+          "name": "Kimi K2.7 Code (Fireworks)",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 262144,
           "maxTokens": 16384,
           "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
         }

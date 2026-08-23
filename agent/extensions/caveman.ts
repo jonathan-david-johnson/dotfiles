@@ -5,6 +5,10 @@
  * responds with extreme brevity — short sentences, no fluff, no pleasantries,
  * just facts and actions.
  *
+ * Terse mode is ON BY DEFAULT for every new session. Use `/caveman off` to
+ * disable it for the current session (the choice is recorded in the session,
+ * so a resumed session keeps whatever was last set).
+ *
  * Usage:
  *   /caveman           → toggle terse mode on/off
  *   /caveman on        → explicitly enable
@@ -17,6 +21,9 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 const CUSTOM_TYPE = "caveman-mode";
+
+/** Terse mode is enabled by default in new sessions; `/caveman off` overrides it. */
+const DEFAULT_ENABLED = true;
 
 interface CavemanState {
 	enabled: boolean;
@@ -50,7 +57,8 @@ function getState(ctx: { sessionManager: { getEntries(): Array<{ type: string; c
 			}
 		}
 	}
-	return latest?.enabled ?? false;
+	// Default: terse mode ON unless this session explicitly turned it off.
+	return latest?.enabled ?? DEFAULT_ENABLED;
 }
 
 function setState(enabled: boolean, pi: ExtensionAPI) {

@@ -5,7 +5,17 @@ agent/npm/
 agent/bin/
 # Firecrawl cache (may contain keys)
 .firecrawl/
+# Context7 doc cache (fetched, regenerable)
+agent/extensions/context7/cache/
 # Experiment logs
 context7-experiment-log.jsonl
 # Top-level package cache
 npm/
+# Playwright browser output/profile (cache, cookies)
+playwright-output/
+playwright-profile
+# Remote pi runtime state (sockets, locks, logs, machine-local identity)
+remote/
+remote-pi/
+# Stray nested .pi/ artifact (subagent wrote here by mistake, not real content)
+/.pi/
