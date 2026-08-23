@@ -56,6 +56,19 @@ alias pp='pi -r'
 
 alias vi='nvim'
 
+# herdr sessions: keep personal/work state isolated (separate socket + session.json)
+# Bare `herdr` launches the personal session; any args (subcommands/flags) pass
+# through to the real binary untouched. `command herdr` bypasses this function,
+# so there is no shell recursion.
+herdr() {
+  if [[ $# -eq 0 ]]; then
+    command herdr --session personal
+  else
+    command herdr "$@"
+  fi
+}
+alias herdrw='command herdr --session work'
+
 # gamp: git add all → commit → push upstream
 gamp() {
   git add --all && git commit -m "$1" && git push -u origin HEAD
