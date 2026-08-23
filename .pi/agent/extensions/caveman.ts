@@ -18,6 +18,7 @@
  * Inspired by the Claude Code "caveman" plugin.
  */
 
+import { readFileSync } from "node:fs";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 const CUSTOM_TYPE = "caveman-mode";
@@ -30,7 +31,12 @@ interface CavemanState {
 	timestamp: number;
 }
 
-const TERSE_INSTRUCTION = `
+/** Wording is Matt Pocock's caveman skill; this extension only adds the
+ * hooks/toggle/status-bar mechanics his static skill can't provide. */
+const MATTPOCOCK_CAVEMAN_SKILL =
+	"/Users/jdj/Documents/code/mattpocock/skills/skills/productivity/caveman/SKILL.md";
+
+const TERSE_INSTRUCTION_FALLBACK = `
 
 ## Communication Style: Terse Mode
 
@@ -43,6 +49,18 @@ You are in TERSE MODE. Follow these rules:
 - Omit reasoning unless the user asks for it.
 - Code blocks are OK when showing code. Keep explanations outside code blocks minimal.
 `;
+
+function loadTerseInstruction(): string {
+	try {
+		const raw = readFileSync(MATTPOCOCK_CAVEMAN_SKILL, "utf-8");
+		const body = raw.replace(/^---\n[\s\S]*?\n---\n/, "").trim();
+		return `\n\n## Communication Style: Terse Mode\n\nYou are in TERSE MODE.\n\n${body}\n`;
+	} catch {
+		return TERSE_INSTRUCTION_FALLBACK;
+	}
+}
+
+const TERSE_INSTRUCTION = loadTerseInstruction();
 
 function getState(ctx: { sessionManager: { getEntries(): Array<{ type: string; customType?: string; data?: unknown }> } }): boolean {
 	const entries = ctx.sessionManager.getEntries();
