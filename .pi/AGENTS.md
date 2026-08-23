@@ -2,7 +2,7 @@
 
 You are located in my `.pi` configuration directory. This directory is backed up to GitHub for version control and safety.
 
-Additionally, I maintain a separate `~/pi-experiments` directory for experiments, testing, and troubleshooting issues that arise during development.
+The `choose-model` skill lives in its own repo at `~/choose-model` (github.com/jonathan-david-johnson/choose-model) and is symlinked into `agent/skills/`.
 
 This pi agent uses fireworks.ai and openrouter  open weight models only
 
