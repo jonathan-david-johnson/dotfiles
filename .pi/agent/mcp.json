@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "wispr-flow": {
+      "url": "https://api.wisprflow.ai/connect/mcp",
+      "auth": "oauth",
+      "lifecycle": "lazy"
+    },
+    "lsp": {
+      "command": "/Users/jdj/go/bin/mcp-language-server",
+      "args": [
+        "--workspace",
+        "/Users/jdj/code/mcps/jira_mcp",
+        "--lsp",
+        "/Users/jdj/.nvm/versions/node/v24.15.0/bin/typescript-language-server",
+        "--",
+        "--stdio"
+      ],
+      "env": {
+        "PATH": "/Users/jdj/.nvm/versions/node/v24.15.0/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
+      },
+      "lifecycle": "lazy"
+    }
+  }
+}

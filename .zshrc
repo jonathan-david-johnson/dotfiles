@@ -52,6 +52,7 @@ alias c='claude --dangerously-skip-permissions'
 alias cr='claude --dangerously-skip-permissions --resume'
 
 alias pc='pi -c'
+alias pic='pi -c'
 alias pp='pi -r'
 
 alias vi='nvim'

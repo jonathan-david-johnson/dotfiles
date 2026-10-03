@@ -3,7 +3,22 @@ onboarding = false
 [keys]
 cycle_pane_next = "prefix+tab"
 last_pane = "prefix+shift+tab"
+previous_agent = "alt+c"
+next_agent = "alt+t"
 
 [theme]
-name = "tokyo-night"
-auto_switch = false
+auto_switch = true
+dark_name = "tokyo-night"
+light_name = "tokyo-night-day"
+
+[[keys.command]]
+key = "alt+h"
+type = "shell"
+command = "/Users/jdj/code/herdr-agent-history/herdr-agent-history previous"
+description = "Focus previous visited agent"
+
+[[keys.command]]
+key = "alt+n"
+type = "shell"
+command = "/Users/jdj/code/herdr-agent-history/herdr-agent-history next"
+description = "Focus next visited agent or unseen completion"

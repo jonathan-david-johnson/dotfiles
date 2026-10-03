@@ -60,18 +60,44 @@ export default function modelThinkingPicker(pi: ExtensionAPI) {
 			return;
 		}
 
-		const sorted = [...models].sort((a, b) =>
-			a.provider === b.provider ? a.id.localeCompare(b.id) : a.provider.localeCompare(b.provider),
-		);
-		const byValue = new Map<string, any>();
+		const sortModels = (ms: readonly any[]) =>
+			[...ms].sort((x, y) =>
+				x.provider === y.provider ? x.id.localeCompare(y.id) : x.provider.localeCompare(y.provider),
+			);
 		const currentValue = ctx.model ? `${ctx.model.provider}/${ctx.model.id}` : undefined;
 
-		const items: SelectItem[] = sorted.map((m) => {
-			const value = `${m.provider}/${m.id}`;
-			byValue.set(value, m);
-			const marker = value === currentValue ? "● " : "  ";
-			return { value, label: `${marker}${value}`, description: m.name };
-		});
+		// Scoped models (`enabledModels` setting, edited via /scoped-models). Empty = no scoping.
+		// Always keep the current model visible so the picker never hides what's active.
+		// ctx.scopedModels is resolved once at pi startup (not on /reload), so if it is empty,
+		// resolve the persisted `enabledModels` patterns ourselves ("provider/id", globs, ":level" suffix).
+		let scoped: any[] = ctx.scopedModels.map((sm) => sm.model as any);
+		if (scoped.length === 0) {
+			const patterns: string[] = (pi.getSettings() as any).enabledModels ?? [];
+			const res = patterns.map((p) => {
+				const body = p.replace(/:(off|minimal|low|medium|high|xhigh|max)$/i, "").toLowerCase();
+				const re = new RegExp(`^${body.split("*").map((x) => x.replace(/[.+?^${}()|[\]\\]/g, "\\$&")).join(".*")}$`);
+				return (m: any) => re.test(`${m.provider}/${m.id}`.toLowerCase()) || re.test(String(m.id).toLowerCase());
+			});
+			scoped = models.filter((m: any) => res.some((f) => f(m)));
+		}
+		const subset = scoped.length > 0 ? scoped.filter((m) => models.some((a) => a.provider === m.provider && a.id === m.id)) : [];
+		if (subset.length > 0 && ctx.model && !subset.some((m) => `${m.provider}/${m.id}` === currentValue)) {
+			subset.push(ctx.model);
+		}
+		const hasSubset = subset.length > 0;
+		let showAll = !hasSubset;
+
+		const byValue = new Map<string, any>();
+		for (const m of models) byValue.set(`${m.provider}/${m.id}`, m);
+
+		const buildItems = (ms: readonly any[]): SelectItem[] =>
+			sortModels(ms).map((m) => {
+				const value = `${m.provider}/${m.id}`;
+				const marker = value === currentValue ? "● " : "  ";
+				return { value, label: `${marker}${value}`, description: m.name };
+			});
+		const subsetItems = hasSubset ? buildItems(subset) : [];
+		const allItems = buildItems(models);
 
 		let desiredLevel: Level = (ctx.thinkingLevel as Level) ?? "off";
 
@@ -80,26 +106,42 @@ export default function modelThinkingPicker(pi: ExtensionAPI) {
 				const container = new Container();
 				const border = () => new DynamicBorder((s: string) => theme.fg("accent", s));
 
-				const title = new Text(theme.fg("accent", theme.bold("Select model")), 1, 0);
+				const title = new Text("", 1, 0);
+				const setTitle = () =>
+					title.setText(
+						theme.fg("accent", theme.bold("Select model")) +
+							theme.fg(
+								"dim",
+								hasSubset
+									? showAll
+										? `  (all ${allItems.length})`
+										: `  (scoped ${subsetItems.length} of ${allItems.length})`
+									: `  (all ${allItems.length}; none scoped)`,
+							),
+					);
+				setTitle();
 				const status = new Text("", 1, 0);
 				const help = new Text(
-					theme.fg("dim", "↑↓ model  •  ←→ thinking  •  type to filter  •  enter apply  •  esc cancel"),
+					theme.fg("dim", "↑↓ model  •  ←→ thinking  •  tab scoped/all  •  type to filter  •  enter apply  •  esc cancel"),
 					1,
 					0,
 				);
 
-				const list = new SelectList(items, Math.min(items.length, 12), {
-					selectedPrefix: (t) => theme.fg("accent", t),
-					selectedText: (t) => theme.fg("accent", t),
-					description: (t) => theme.fg("muted", t),
-					scrollInfo: (t) => theme.fg("dim", t),
-					noMatch: (t) => theme.fg("warning", t),
-				});
-
-				if (currentValue) {
-					const idx = items.findIndex((it) => it.value === currentValue);
-					if (idx >= 0) list.setSelectedIndex(idx);
-				}
+				const makeList = (items: SelectItem[]) => {
+					const l = new SelectList(items, Math.min(items.length, 12), {
+						selectedPrefix: (t) => theme.fg("accent", t),
+						selectedText: (t) => theme.fg("accent", t),
+						description: (t) => theme.fg("muted", t),
+						scrollInfo: (t) => theme.fg("dim", t),
+						noMatch: (t) => theme.fg("warning", t),
+					});
+					if (currentValue) {
+						const idx = items.findIndex((it) => it.value === currentValue);
+						if (idx >= 0) l.setSelectedIndex(idx);
+					}
+					return l;
+				};
+				let list = makeList(showAll ? allItems : subsetItems);
 
 				const currentModel = () => {
 					const sel = list.getSelectedItem();
@@ -131,23 +173,31 @@ export default function modelThinkingPicker(pi: ExtensionAPI) {
 					tui.requestRender();
 				}
 
-				list.onSelectionChange = () => {
-					refreshStatus();
-					tui.requestRender();
-				};
-				list.onSelect = (item) => {
-					const model = byValue.get(item.value);
-					const supported = model ? levelsFor(model) : ["off" as Level];
-					done({ value: item.value, level: clampLevel(desiredLevel, supported) });
-				};
-				list.onCancel = () => done(null);
+				function wireList() {
+					list.onSelectionChange = () => {
+						refreshStatus();
+						tui.requestRender();
+					};
+					list.onSelect = (item) => {
+						const model = byValue.get(item.value);
+						const supported = model ? levelsFor(model) : ["off" as Level];
+						done({ value: item.value, level: clampLevel(desiredLevel, supported) });
+					};
+					list.onCancel = () => done(null);
+				}
+				wireList();
 
-				container.addChild(border());
-				container.addChild(title);
-				container.addChild(status);
-				container.addChild(list);
-				container.addChild(help);
-				container.addChild(border());
+				function layout() {
+					container.clear();
+					container.addChild(border());
+					container.addChild(title);
+					container.addChild(status);
+					container.addChild(list);
+					container.addChild(help);
+					container.addChild(border());
+				}
+
+				layout();
 
 				refreshStatus();
 
@@ -159,6 +209,17 @@ export default function modelThinkingPicker(pi: ExtensionAPI) {
 						refreshStatus();
 					},
 					handleInput: (data) => {
+						if (matchesKey(data, Key.tab) && hasSubset) {
+							showAll = !showAll;
+							list = makeList(showAll ? allItems : subsetItems);
+							filter = "";
+							wireList();
+							setTitle();
+							layout();
+							refreshStatus();
+							tui.requestRender();
+							return;
+						}
 						if (matchesKey(data, Key.left)) {
 							stepLevel(-1);
 							return;
@@ -204,9 +265,9 @@ export default function modelThinkingPicker(pi: ExtensionAPI) {
 		ctx.ui.notify(`Model: ${result.value}  •  thinking: ${result.level}`, "info");
 	}
 
-	// Replace the built-in model selector keybinding (Ctrl+L). The editor checks
-	// extension shortcuts before built-in actions, so this takes precedence.
-	pi.registerShortcut("ctrl+l", {
+	// Use a non-built-in shortcut; Ctrl+L is reserved by app.model.select.
+	// The /mm command remains available in terminals that don't report Ctrl+Shift+L.
+	pi.registerShortcut("ctrl+shift+l", {
 		description: "Model + thinking level picker",
 		handler: openPicker,
 	});
