@@ -1,0 +1,5 @@
+# macOS Finder metadata
+.DS_Store
+
+# Transient pi session handoffs (may reference private endpoints)
+.pi/HANDOFF.md
