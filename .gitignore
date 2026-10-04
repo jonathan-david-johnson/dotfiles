@@ -3,3 +3,6 @@
 
 # Transient pi session handoffs (may reference private endpoints)
 .pi/HANDOFF.md
+
+# Per-machine pi project-trust decisions
+.pi/agent/trust.json
