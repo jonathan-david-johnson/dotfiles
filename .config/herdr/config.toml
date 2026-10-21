@@ -1,6 +1,11 @@
 onboarding = false
 
 [keys]
+split_horizontal = "prefix+h"
+focus_pane_left = "prefix+left"
+focus_pane_down = "prefix+down"
+focus_pane_up = "prefix+up"
+focus_pane_right = "prefix+right"
 cycle_pane_next = "prefix+tab"
 last_pane = "prefix+shift+tab"
 previous_agent = "alt+c"
@@ -9,7 +14,7 @@ next_agent = "alt+t"
 [theme]
 auto_switch = true
 dark_name = "tokyo-night"
-light_name = "tokyo-night-day"
+light_name = "one-light"
 
 [[keys.command]]
 key = "alt+h"
