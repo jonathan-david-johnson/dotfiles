@@ -6,3 +6,6 @@
 
 # Per-machine pi project-trust decisions
 .pi/agent/trust.json
+
+# Karabiner auto-generated backups
+.config/karabiner/automatic_backups/

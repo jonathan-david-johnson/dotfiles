@@ -1,0 +1,153 @@
+config-version = 2
+
+start-at-login = true
+after-login-command = []
+after-startup-command = [
+  'exec-and-forget borders active_color=0xff7aa2f7 inactive_color=0xff414868 width=6.0'
+]
+
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+accordion-padding = 30
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+
+# Faster key repeat/less animation: none by default in AeroSpace.
+automatically-unhide-macos-hidden-apps = false
+
+[key-mapping]
+preset = 'dvorak'
+
+[gaps]
+inner.horizontal = 8
+inner.vertical   = 8
+outer.left       = 8
+outer.bottom     = 8
+outer.top        = 8
+outer.right      = 8
+
+[mode.main.binding]
+# Focus (Dvorak home row: d h t n = left down up right)
+ctrl-alt-cmd-d = 'focus left'
+ctrl-alt-cmd-h = 'focus down'
+ctrl-alt-cmd-t = 'focus up'
+ctrl-alt-cmd-n = 'focus right'
+
+# Move windows
+ctrl-alt-cmd-shift-d = 'move left'
+ctrl-alt-cmd-shift-h = 'move down'
+ctrl-alt-cmd-shift-t = 'move up'
+ctrl-alt-cmd-shift-n = 'move right'
+
+# Layout
+ctrl-alt-cmd-slash = 'layout tiles horizontal vertical'
+ctrl-alt-cmd-comma = 'layout accordion horizontal vertical'
+ctrl-alt-cmd-f = 'fullscreen'
+ctrl-alt-cmd-shift-space = 'layout floating tiling'
+
+# Resize
+ctrl-alt-cmd-minus = 'resize smart -50'
+ctrl-alt-cmd-equal = 'resize smart +50'
+
+# Workspaces
+ctrl-alt-cmd-1 = 'workspace 1'
+ctrl-alt-cmd-2 = 'workspace 2'
+ctrl-alt-cmd-3 = 'workspace 3'
+ctrl-alt-cmd-4 = 'workspace 4'
+ctrl-alt-cmd-5 = 'workspace 5'
+ctrl-alt-cmd-6 = 'workspace 6'
+ctrl-alt-cmd-7 = 'workspace 7'
+ctrl-alt-cmd-8 = 'workspace 8'
+ctrl-alt-cmd-9 = 'workspace 9'
+
+ctrl-alt-cmd-shift-1 = 'move-node-to-workspace 1'
+ctrl-alt-cmd-shift-2 = 'move-node-to-workspace 2'
+ctrl-alt-cmd-shift-3 = 'move-node-to-workspace 3'
+ctrl-alt-cmd-shift-4 = 'move-node-to-workspace 4'
+ctrl-alt-cmd-shift-5 = 'move-node-to-workspace 5'
+ctrl-alt-cmd-shift-6 = 'move-node-to-workspace 6'
+ctrl-alt-cmd-shift-7 = 'move-node-to-workspace 7'
+ctrl-alt-cmd-shift-8 = 'move-node-to-workspace 8'
+ctrl-alt-cmd-shift-9 = 'move-node-to-workspace 9'
+
+ctrl-alt-cmd-tab = 'workspace-back-and-forth'
+ctrl-alt-cmd-shift-tab = 'move-workspace-to-monitor --wrap-around next'
+
+# Enter service mode
+ctrl-alt-cmd-shift-semicolon = 'mode service'
+
+[mode.service.binding]
+esc = ['reload-config', 'mode main']
+r = ['flatten-workspace-tree', 'mode main']   # reset layout
+f = ['layout floating tiling', 'mode main']   # toggle float
+backspace = ['close-all-windows-but-current', 'mode main']
+
+# Floating by default for apps that tile badly
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.finder'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.calculator'
+run = 'layout floating'
+
+# Utilities, menu bar apps, and password/VPN windows that tile badly
+[[on-window-detected]]
+if.app-id = 'com.1password.1password'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.electron.wispr-flow'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'us.zoom.xos'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.ActivityMonitor'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'org.pqrs.Karabiner-Elements.Settings'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'org.pqrs.Karabiner-EventViewer'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'eu.exelban.Stats'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'io.tailscale.ipn.macsys'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'ch.protonvpn.mac'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.wireguard.macos'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.nextcloud.desktopclient'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.logi.optionsplus'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'Jonathan-David-Johnson.KCRW-MenuBar-Player'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.jdj.pocketradio'
+run = 'layout floating'

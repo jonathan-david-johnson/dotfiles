@@ -1,0 +1,26 @@
+{
+  "global": { "show_in_menu_bar": true },
+  "profiles": [
+    {
+      "name": "Default profile",
+      "selected": true,
+      "virtual_hid_keyboard": { "keyboard_type_v2": "ansi" },
+      "complex_modifications": {
+        "rules": [
+          {
+            "description": "Caps Lock -> Cmd+Ctrl+Opt (AeroSpace modifier)",
+            "manipulators": [
+              {
+                "type": "basic",
+                "from": { "key_code": "caps_lock", "modifiers": { "optional": ["shift"] } },
+                "to": [
+                  { "key_code": "left_control", "modifiers": ["left_command", "left_option"] }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
