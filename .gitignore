@@ -9,3 +9,8 @@
 
 # Karabiner auto-generated backups
 .config/karabiner/automatic_backups/
+
+# Per-machine MCP OAuth tokens and setup artifacts (secrets)
+.pi/agent/mcp-auth.json
+.pi/agent/cloudflare-setup-login.json
+.pi/agent/mcp.json.backup-*
