@@ -11,9 +11,9 @@
           "image"
         ],
         "cost": {
-          "input": 0.22,
-          "output": 0.66,
-          "cacheRead": 0.007,
+          "input": 0.3,
+          "output": 1.2,
+          "cacheRead": 0.006,
           "cacheWrite": 0
         },
         "contextWindow": 1000000,
@@ -492,9 +492,9 @@
           "image"
         ],
         "cost": {
-          "input": 0.22,
-          "output": 0.66,
-          "cacheRead": 0.007,
+          "input": 0.3,
+          "output": 1.2,
+          "cacheRead": 0.006,
           "cacheWrite": 0
         },
         "contextWindow": 1000000,
@@ -908,9 +908,9 @@
         "type": "chat"
       }
     ],
-    "checkedAt": 1791039519738,
-    "lastModified": 1790598347000,
-    "etag": "W/\"e68e057c47024a7edd1dae83498a235a\""
+    "checkedAt": 1792607026372,
+    "lastModified": 1791044219000,
+    "etag": "W/\"256e7ca6d1aa90d4a0653a289222c3f6\""
   },
   "openrouter": {
     "models": [
@@ -9810,7 +9810,7 @@
             }
           ]
         },
-        "contextWindow": 272000,
+        "contextWindow": 500000,
         "maxTokens": 128000,
         "thinkingLevelMap": {
           "off": null,
@@ -9840,9 +9840,9 @@
         "type": "chat"
       }
     ],
-    "checkedAt": 1791039519612,
-    "lastModified": 1790763472000,
-    "etag": "W/\"8003e3819641342fe5725e65d6bea0fb\""
+    "checkedAt": 1792607026389,
+    "lastModified": 1792068061000,
+    "etag": "W/\"ff7807f4089ddfed6df00529779cb715\""
   },
   "anthropic": {
     "models": [
@@ -10035,6 +10035,68 @@
           "maxRequestBytes": 33554432,
           "images": {
             "maxPerRequest": 100,
+            "resize": {
+              "maxWidth": 2000,
+              "maxHeight": 2000,
+              "maxBytes": 4718592,
+              "jpegQuality": 80
+            }
+          }
+        },
+        "type": "chat"
+      },
+      {
+        "id": "claude-haiku-5-5",
+        "name": "Claude Haiku 5.5",
+        "api": "anthropic-messages",
+        "provider": "anthropic",
+        "baseUrl": "https://api.anthropic.com",
+        "reasoning": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "cost": {
+          "input": 0.1,
+          "output": 0.5,
+          "cacheRead": 0.01,
+          "cacheWrite": 0.125,
+          "tiers": [
+            {
+              "inputTokensAbove": 100000,
+              "input": 0.5,
+              "output": 2.5,
+              "cacheRead": 0.05,
+              "cacheWrite": 0.625
+            }
+          ]
+        },
+        "contextWindow": 1000000,
+        "maxTokens": 128000,
+        "thinkingLevelMap": {
+          "minimal": null,
+          "low": "low",
+          "medium": "medium",
+          "high": "high",
+          "xhigh": "xhigh",
+          "max": "max"
+        },
+        "compat": {
+          "supportsMidConvoEffort": true,
+          "supportsMidConvoSystemMessages": true,
+          "supportsMidConvoToolChanges": true,
+          "forceAdaptiveThinking": true,
+          "supportsTemperature": false,
+          "supportsStrictTools": true
+        },
+        "promptCache": {
+          "short": 300,
+          "long": 3600
+        },
+        "inputLimits": {
+          "maxRequestBytes": 33554432,
+          "images": {
+            "maxPerRequest": 600,
             "resize": {
               "maxWidth": 2000,
               "maxHeight": 2000,
@@ -10291,7 +10353,6 @@
           "supportsStrictTools": true
         },
         "thinkingLevelMap": {
-          "off": null,
           "xhigh": "xhigh",
           "max": "max"
         },
@@ -10384,7 +10445,7 @@
           "cacheRead": 0.3,
           "cacheWrite": 3.75
         },
-        "contextWindow": 1000000,
+        "contextWindow": 200000,
         "maxTokens": 64000,
         "compat": {
           "supportsStrictTools": true
@@ -10396,7 +10457,7 @@
         "inputLimits": {
           "maxRequestBytes": 33554432,
           "images": {
-            "maxPerRequest": 600,
+            "maxPerRequest": 100,
             "resize": {
               "maxWidth": 2000,
               "maxHeight": 2000,
@@ -10424,7 +10485,7 @@
           "cacheRead": 0.3,
           "cacheWrite": 3.75
         },
-        "contextWindow": 1000000,
+        "contextWindow": 200000,
         "maxTokens": 64000,
         "compat": {
           "supportsStrictTools": true
@@ -10436,7 +10497,7 @@
         "inputLimits": {
           "maxRequestBytes": 33554432,
           "images": {
-            "maxPerRequest": 600,
+            "maxPerRequest": 100,
             "resize": {
               "maxWidth": 2000,
               "maxHeight": 2000,
@@ -10550,7 +10611,7 @@
         "cost": {
           "input": 2,
           "output": 10,
-          "cacheRead": 0.2,
+          "cacheRead": 0.1,
           "cacheWrite": 2.5
         },
         "contextWindow": 1000000,
@@ -10591,8 +10652,8 @@
         "type": "chat"
       }
     ],
-    "checkedAt": 1791039519613,
-    "lastModified": 1790772102000,
-    "etag": "W/\"3442ece5a2e978b487a859a8a172062c\""
+    "checkedAt": 1792607026438,
+    "lastModified": 1792068012000,
+    "etag": "W/\"57f8d8de07c2366a6fec71012c710360\""
   }
 }

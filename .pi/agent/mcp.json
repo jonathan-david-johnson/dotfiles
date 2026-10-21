@@ -19,6 +19,9 @@
         "PATH": "/Users/jdj/.nvm/versions/node/v24.15.0/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
       },
       "lifecycle": "lazy"
+    },
+    "cloudflare": {
+      "url": "https://mcp.cloudflare.com/mcp"
     }
   }
 }
