@@ -14,8 +14,6 @@
 // footer — this extension clears its status key for them.
 //
 // Replaces pi-claude-subscription-connector's usage-status.ts (the 🧠 line).
-// The connector's subscription-guard.ts is vendored separately as
-// extensions/subscription-guard.ts so Claude plan-billing still works.
 
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";

@@ -2,36 +2,34 @@
 
 You are located in my `.pi` configuration directory. This directory is backed up to GitHub for version control and safety.
 
-The `choose-model` skill lives in its own repo at `~/choose-model` (github.com/jonathan-david-johnson/choose-model) and is symlinked into `agent/skills/`.
+## The `pi` executable
 
-## Models
+`pi` is the nvm global bin, `~/.nvm/versions/node/v24.15.0/bin/pi`. It links to
+the global package `@earendil-works/pi-coding-agent`, and that package is itself
+a symlink to a build slot at
+`~/.cache/pi-safe-upgrade/build-<version>-<stamp>/packages/coding-agent`.
 
-Personal pi defaults to `openai-codex` (ChatGPT Plus oauth) — see
-`defaultModel` in [agent/settings.json](agent/settings.json). Fireworks and
-openrouter supply the open-weight models.
+`pi_safe_upgrade --execute` builds a new slot from the source checkout at
+`~/.cache/pi-mono-tool-groups`, then repoints the global package link. It keeps
+the live slot and the previous one (the rollback target) and deletes older ones.
+Restart open pi sessions after an upgrade.
 
-`piw` (see the alias) is the work account; it reaches openai and anthropic
-through an LLM proxy. Never point personal pi at the work proxy.
-
-Both aliases run the same executable, which is a symlink into a local monorepo
-checkout at `~/.cache/pi-mono-tool-groups`. `pi_update` rebuilds it in place, so
-restart open sessions afterwards — a session spanning a rebuild fails with
-`The requested module './text.js' does not provide an export named ...`.
+`pi_update` is the older in-place rebuild of the source checkout. The running
+`pi` does not use that checkout directly anymore, so do not use `pi_update` to
+upgrade pi.
 
 ## Todo
 
 Open work is tracked in [todo.md](todo.md). Supplemental detail for individual items lives in its own file, linked from the todo entry.
 
-## Vendored extensions
+## Theme
 
-- **subscription-guard** ([agent/extensions/subscription-guard.ts](agent/extensions/subscription-guard.ts))
-  — copied from the `pi-claude-subscription-connector` package so Claude OAuth
-  requests keep billing to the subscription (not "extra usage"). We vendor it to
-  drop that package's `usage-status.ts` 🧠 footer while keeping the billing guard.
-  Re-sync on connector updates: `npm i pi-claude-subscription-connector` (ad-hoc),
-  `cp .../extensions/subscription-guard.ts agent/extensions/`, re-apply the file's
-  header. The `pi-claude-subscription-connector` package is intentionally NOT in
-  `agent/settings.json` packages.
+Colors come from three layers: Ghostty, Herdr, and pi. Ghostty has two config
+files, and the second one overrides the first. See [theme.md](theme.md) for the
+setup, the diagnostic script, and the known failure modes.
+
+## Custom extensions
+
 - **subscription-usage** ([agent/extensions/subscription-usage.ts](agent/extensions/subscription-usage.ts))
   — hand-written replacement for the connector's footer line: a brain-free usage
   status (`5h 8% (2h30m) · wk 17% (3d4h)`, plus model-scoped weekly) for OAuth
