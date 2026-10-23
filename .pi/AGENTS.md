@@ -36,6 +36,14 @@ setup, the diagnostic script, and the known failure modes.
   subscription providers (`anthropic`, `openai-codex`). Per-token/API-key models
   fall back to pi's default footer. OpenAI usage comes from the same endpoint as
   `~/Documents/bin/usage` (`chatgpt.com/backend-api/wham/usage`).
+- **playwright-mcp** ([agent/extensions/playwright-mcp.ts](agent/extensions/playwright-mcp.ts))
+  — bridges `@playwright/mcp` into pi as native tools. It launches **Chrome Agent.app**
+  (`~/Applications/`), a copy of Google Chrome with bundle ID `com.jdj.chrome-agent`.
+  An AeroSpace rule in `~/.config/aerospace/aerospace.toml` sends that app to
+  workspace 9, and your own Chrome (`com.google.Chrome`) is untouched. The copy
+  must match the installed Chrome version, because the shared profile
+  (`~/.claude/playwright-profile`) rejects an older browser. After a Chrome update, quit
+  the agent browser and run [scripts/rebuild-chrome-agent.sh](scripts/rebuild-chrome-agent.sh).
 
 ## Skills we don't vendor
 

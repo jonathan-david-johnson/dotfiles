@@ -19,24 +19,24 @@ automatically-unhide-macos-hidden-apps = false
 preset = 'dvorak'
 
 [gaps]
-inner.horizontal = 8
-inner.vertical   = 8
-outer.left       = 8
-outer.bottom     = 8
-outer.top        = 8
-outer.right      = 8
+inner.horizontal = 2
+inner.vertical   = 2
+outer.left       = 2
+outer.bottom     = 2
+outer.top        = 2
+outer.right      = 2
 
 [mode.main.binding]
-# Focus (Dvorak home row: d h t n = left down up right)
-ctrl-alt-cmd-d = 'focus left'
-ctrl-alt-cmd-h = 'focus down'
-ctrl-alt-cmd-t = 'focus up'
+# Focus (Dvorak inverted T: c = up; h t n = left down right)
+ctrl-alt-cmd-h = 'focus left'
+ctrl-alt-cmd-t = 'focus down'
+ctrl-alt-cmd-c = 'focus up'
 ctrl-alt-cmd-n = 'focus right'
 
 # Move windows
-ctrl-alt-cmd-shift-d = 'move left'
-ctrl-alt-cmd-shift-h = 'move down'
-ctrl-alt-cmd-shift-t = 'move up'
+ctrl-alt-cmd-shift-h = 'move left'
+ctrl-alt-cmd-shift-t = 'move down'
+ctrl-alt-cmd-shift-c = 'move up'
 ctrl-alt-cmd-shift-n = 'move right'
 
 # Layout
@@ -151,3 +151,9 @@ run = 'layout floating'
 [[on-window-detected]]
 if.app-id = 'com.jdj.pocketradio'
 run = 'layout floating'
+
+# Agent-driven Chrome (copy of Chrome with its own bundle ID, see ~/.pi/scripts/rebuild-chrome-agent.sh)
+# always opens on workspace 9 so it stays out of the way.
+[[on-window-detected]]
+if.app-id = 'com.jdj.chrome-agent'
+run = 'move-node-to-workspace 9'
