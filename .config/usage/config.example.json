@@ -1,0 +1,22 @@
+{
+  "providers": [
+    {
+      "name": "Codex",
+      "type": "codex_pi"
+    },
+    {
+      "name": "Claude",
+      "type": "claude_oauth"
+    },
+    {
+      "name": "Fireworks.ai",
+      "type": "fireworks_billing",
+      "account_id": "YOUR_ACCOUNT_ID"
+    },
+    {
+      "name": "OpenRouter.ai",
+      "type": "openrouter_credits",
+      "api_key_env": "OPENROUTER_API_KEY"
+    }
+  ]
+}

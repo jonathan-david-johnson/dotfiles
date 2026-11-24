@@ -14,3 +14,28 @@
 .pi/agent/mcp-auth.json
 .pi/agent/cloudflare-setup-login.json
 .pi/agent/mcp.json.backup-*
+
+# Local settings and credentials stay outside version control.
+.config/git/config.local
+.config/zsh/.zshrc.local
+.config/gh/hosts.yml
+.config/usage/config.json
+.config/claude/settings.json
+.config/claude/settings.local.json
+.config/tmux/plugins/
+.config/pocket-radio/
+.config/borg/
+.config/op/
+
+# herdr-app: track only user config; everything else is app-managed or runtime state
+.config/herdr-app/*
+!.config/herdr-app/keys.json
+!.config/herdr-app/settings.json
+!.config/herdr-app/layouts/
+!.config/herdr-app/themes/
+.config/herdr-app/layouts/.state/
+
+# pi runtime data and setup backups (router logs contain prompts)
+.pi/agent/model-router/
+.pi/agent/mcp.json.bak-*
+.config/aerospace/.pi/

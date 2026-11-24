@@ -1,0 +1,33 @@
+{
+  "model": "opus",
+  "effortLevel": "high",
+  "theme": "auto",
+  "preferences": {
+    "tmuxSplitPanes": true
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.claude/hooks/clarity-activate.py\"",
+            "timeout": 5,
+            "statusMessage": "Loading clear mode..."
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "python3 \"$HOME/.claude/hooks/pi-statusline.py\""
+  },
+  "enabledPlugins": {
+    "swift-lsp@claude-plugins-official": true,
+    "voicemode@voicemode": true
+  },
+  "tui": "fullscreen",
+  "voiceEnabled": false
+}

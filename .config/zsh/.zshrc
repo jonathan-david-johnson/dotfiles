@@ -1,3 +1,7 @@
+HISTFILE="$HOME/.zsh_history"
+ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/.zcompdump-${ZSH_VERSION}"
+mkdir -p "${ZSH_COMPDUMP:h}"
+
 # Oh My Zsh if present, else bare zsh init
 if [[ -d "$HOME/.oh-my-zsh" ]]; then
   export ZSH="$HOME/.oh-my-zsh"
@@ -11,7 +15,7 @@ else
   SAVEHIST=1000
   HISTFILE=~/.zsh_history
   autoload -Uz compinit
-  compinit
+  compinit -d "$ZSH_COMPDUMP"
 fi
 
 # Tab completions
@@ -75,7 +79,7 @@ gamp() {
   git add --all && git commit -m "$1" && git push -u origin HEAD
 }
 
-[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+[[ -f "${ZDOTDIR:-$HOME/.config/zsh}/.zshrc.local" ]] && source "${ZDOTDIR:-$HOME/.config/zsh}/.zshrc.local"
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/fzf/fzf.zsh" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/fzf/fzf.zsh"
 

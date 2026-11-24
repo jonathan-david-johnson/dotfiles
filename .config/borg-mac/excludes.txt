@@ -1,0 +1,38 @@
+# Exclusion patterns for the borg-mac backup, per TIMEMACHINE_TO_BORG_SPEC.md section 6.
+# Passed to `borg create --exclude-from`.
+#
+# Patterns are prefixed with **/ deliberately: the backup source is a mounted
+# snapshot (e.g. /tmp/borg-mac-snapshot/Users/jdj/...), so a pattern anchored
+# at "Users/jdj/..." does NOT match — the actual stored path starts with the
+# mount prefix. Confirmed 2026-09-12: with un-prefixed patterns, every
+# exclusion silently failed to match and Google Drive/iCloud/FileProvider
+# content was walked in full (causing most of that run's cloud-placeholder
+# timeouts and permission-denied warnings). **/ matches any number of leading
+# path segments, so this works regardless of the mount path.
+#
+# Every entry here costs restore completeness. See the spec for the reasoning
+# behind each one before adding more.
+
+sh:**/Library/Caches
+sh:**/Library/Developer/Xcode/DerivedData
+sh:**/Library/Developer/Xcode/iOS DeviceSupport
+sh:**/Library/Developer/CoreSimulator
+sh:**/Library/Containers/com.docker.docker
+sh:**/Library/CloudStorage
+sh:**/Library/Mobile Documents
+sh:**/Library/Application Support/FileProvider
+sh:**/Library/Application Support/Steam
+sh:**/Library/Application Support/Claude
+sh:**/T5-backup
+sh:**/.Trash
+sh:**/.DS_Store
+sh:**/node_modules
+sh:**/.venv
+sh:**/venv
+sh:**/.cache
+
+# PocketRadio's own leaked CFNetworkDownload temp files — 248K+ files, ~24GB,
+# app bug (menubar's own docs/menubar/bugs/bug_1.md, filed 2026-09-13).
+# Remove this line if/when that's fixed and the app stops leaking, rather
+# than letting a special-case outlive its reason.
+sh:**/Library/Containers/com.jdj.pocketradio/Data/tmp

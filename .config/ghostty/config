@@ -1,0 +1,12 @@
+font-family = JetBrainsMono Nerd Font
+copy-on-select = true
+theme = dark:TokyoNight,light:GitHub Light Default
+macos-option-as-alt = left
+
+# Force Herdr's Option navigation chords to send terminal Alt/Esc sequences.
+# macos-option-as-alt should make left Option do this globally, but these
+# explicit binds avoid Option-H producing the macOS `˙` dead-key character.
+keybind = option+h=esc:h
+keybind = option+n=esc:n
+keybind = option+c=esc:c
+keybind = option+t=esc:t
