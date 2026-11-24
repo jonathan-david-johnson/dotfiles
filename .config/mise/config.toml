@@ -2,8 +2,9 @@
 # Language servers for pi (supi-code-intelligence) and editors.
 # TypeScript itself comes from each project's node_modules (TS 7 projects use its
 # native server; older ones go through typescript-language-server).
-# Java's jdtls is installed with the OS package manager (needs a JDK 21+):
-#   Arch: yay -S jdk21-openjdk jdtls    macOS: brew install jdtls
+# Java's jdtls is installed with the OS package manager. jdtls 1.63+ needs JDK 25:
+#   Arch: pacman -S jdk25-openjdk && archlinux-java set java-25-openjdk; yay -S jdtls
+#   macOS: brew install jdtls (pulls in a current OpenJDK)
 
 [tools]
 "npm:typescript-language-server" = "latest"

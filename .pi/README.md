@@ -21,7 +21,7 @@ Packages in `settings.json` (pi-clarity, supi-code-intelligence, context7, remot
 
 1. Install pi, then run `./install.sh` from the dotfiles root.
 2. Run `/login` for each provider and `/mcp` to sign in to MCP servers. Credentials are per machine and not in git.
-3. Install the language servers for supi-code-intelligence: `mise install` (see `.config/mise/config.toml`). Java needs a JDK 21+ and `jdtls` from the OS package manager.
+3. Install the language servers for supi-code-intelligence: `mise install` (see `.config/mise/config.toml`). Java needs JDK 25 and `jdtls` from the OS package manager.
 
 ## Updating config
 
