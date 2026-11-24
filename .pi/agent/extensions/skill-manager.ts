@@ -14,9 +14,36 @@ type SkillInfo = {
 // Config – always enabled default skills
 const DEFAULT_ENABLED = ["caveman", "context7", "firecrawl", "grill-me", "handoff", "html-doc", "youtube-transcript"];
 
+// Per-directory defaults: every `.pi/skill-manager.json` from cwd up to the
+// filesystem root is merged, so a vault-level file covers all its subfolders.
+// Shape: { "enable": ["skill-name", ...] }
+const PROJECT_CONFIG = path.join(".pi", "skill-manager.json");
+function projectEnabled(): string[] {
+  const names: string[] = [];
+  let dir = process.cwd();
+  while (true) {
+    const file = path.join(dir, PROJECT_CONFIG);
+    if (fs.existsSync(file)) {
+      try {
+        const data = JSON.parse(fs.readFileSync(file, "utf-8")) as { enable?: unknown };
+        if (Array.isArray(data.enable)) {
+          for (const n of data.enable) if (typeof n === "string") names.push(n);
+        }
+      } catch {}
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return names;
+}
+function defaultEnabled(): Set<string> {
+  return new Set([...DEFAULT_ENABLED, ...projectEnabled()]);
+}
+
 // State
 let catalog: SkillInfo[] = [];
-let enabledNames: Set<string> = new Set(DEFAULT_ENABLED);
+let enabledNames: Set<string> = defaultEnabled();
 
 // Helpers
 function parseSkillsFromPrompt(prompt: string): SkillInfo[] {
@@ -164,7 +191,7 @@ function ensureCatalog(
     }
   }
   catalog = Array.from(byName.values()).sort((a, b) => a.name.localeCompare(b.name));
-  for (const name of DEFAULT_ENABLED) {
+  for (const name of defaultEnabled()) {
     if (catalog.find((c) => c.name === name)) {
       enabledNames.add(name);
     }
@@ -186,7 +213,7 @@ export default function (pi: ExtensionAPI) {
     if (lastState) {
       enabledNames = new Set(lastState);
     } else {
-      enabledNames = new Set(DEFAULT_ENABLED);
+      enabledNames = defaultEnabled();
     }
   }
   pi.on("session_start", async (_event, ctx) => {

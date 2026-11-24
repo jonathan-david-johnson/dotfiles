@@ -2,7 +2,6 @@
   "mcpServers": {
     "wispr-flow": {
       "url": "https://api.wisprflow.ai/connect/mcp",
-      "auth": "oauth",
       "lifecycle": "lazy"
     },
     "lsp": {
@@ -22,6 +21,18 @@
     },
     "cloudflare": {
       "url": "https://mcp.cloudflare.com/mcp"
+    },
+    "rex-docs": {
+      "url": "https://www.superlogical.com/rex/community-mcp",
+      "lifecycle": "lazy"
+    },
+    "monarch": {
+      "url": "https://api.monarch.com/mcp",
+      "lifecycle": "lazy"
+    },
+    "todoist": {
+      "url": "https://ai.todoist.net/mcp",
+      "lifecycle": "lazy"
     }
   }
 }

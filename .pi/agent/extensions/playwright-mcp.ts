@@ -220,7 +220,7 @@ export default function (pi: ExtensionAPI) {
 				s.status = "ready";
 				s.error = null;
 				ctx.ui?.notify?.(`Playwright MCP ready: ${s.tools.length} tools`, "info");
-				ctx.ui?.setStatus?.("pw", `playwright: ${s.tools.length} tools`);
+				ctx.ui?.setStatus?.("pw", "🎭");
 			} catch (e) {
 				s.status = "error";
 				s.error = e instanceof Error ? e.message : String(e);
@@ -246,12 +246,12 @@ export default function (pi: ExtensionAPI) {
 			if (s.tools && pi.getAllTools().every((t) => !t.name.startsWith("browser_"))) {
 				registerTools(pi, s);
 			}
-			ctx.ui?.setStatus?.("pw", `playwright: ${s.tools?.length ?? 0} tools`);
+			ctx.ui?.setStatus?.("pw", "🎭");
 			return;
 		}
 		if (s.status === "error") {
 			// previous boot failed this process — don't auto-retry every session and spam.
-			ctx.ui?.setStatus?.("pw", "playwright: off");
+			ctx.ui?.setStatus?.("pw", "🎭 off");
 			return;
 		}
 		try {

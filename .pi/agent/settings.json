@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "1.1.0",
+  "lastChangelogVersion": "1.4.0",
   "defaultProvider": "openai",
   "defaultModel": "gpt-5.6-sol",
   "defaultThinkingLevel": "high",
@@ -12,6 +12,7 @@
   "enabledModels": [
     "anthropic/claude-sonnet-5-5",
     "anthropic/claude-opus-5-5",
+    "cloudflare-workers-ai/@cf/zai-org/glm-4.7-flash",
     "fireworks/accounts/fireworks/routers/deepseek-flash-latest",
     "fireworks/accounts/fireworks/routers/kimi-latest",
     "fireworks/accounts/fireworks/routers/kimi-fast-latest",
@@ -24,5 +25,8 @@
   ],
   "terminal": {
     "showTerminalProgress": true
+  },
+  "warnings": {
+    "anthropicExtraUsage": false
   }
 }
