@@ -1,14 +1,11 @@
 {
-  "lastChangelogVersion": "1.4.0",
-  "defaultProvider": "openai",
-  "defaultModel": "gpt-5.6-sol",
   "defaultThinkingLevel": "high",
-  "theme": "intellij-light/tokyo-night",
   "packages": [
     "npm:@dreki-gg/pi-context7",
-    "npm:remote-pi"
+    "npm:remote-pi",
+    "git:github.com/jonathan-david-johnson/pi-clarity",
+    "npm:@mrclrchtr/supi-code-intelligence"
   ],
-  "hideThinkingBlock": false,
   "enabledModels": [
     "anthropic/claude-sonnet-5-5",
     "anthropic/claude-opus-5-5",

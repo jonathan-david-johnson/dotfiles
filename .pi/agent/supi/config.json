@@ -1,0 +1,12 @@
+{
+  "lsp": {
+    "servers": {
+      "lua": {
+        "command": "lua-language-server",
+        "args": [],
+        "fileTypes": ["lua"],
+        "rootMarkers": [".luarc.json", ".luarc.jsonc", ".stylua.toml", "stylua.toml", ".git"]
+      }
+    }
+  }
+}

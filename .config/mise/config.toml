@@ -1,0 +1,13 @@
+# Global mise tools, shared across machines.
+# Language servers for pi (supi-code-intelligence) and editors.
+# TypeScript itself comes from each project's node_modules (TS 7 projects use its
+# native server; older ones go through typescript-language-server).
+# Java's jdtls is installed with the OS package manager (needs a JDK 21+):
+#   Arch: yay -S jdk21-openjdk jdtls    macOS: brew install jdtls
+
+[tools]
+"npm:typescript-language-server" = "latest"
+"npm:pyright" = "latest"
+"npm:bash-language-server" = "latest"
+shellcheck = "latest" # bash-language-server uses it for diagnostics
+lua-language-server = "latest"
