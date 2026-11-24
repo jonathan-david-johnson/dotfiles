@@ -8,12 +8,12 @@ This directory is the source of truth for the tracked parts of `~/.pi/agent/`. `
 
 | Item | How |
 |---|---|
-| `models.json`, `mcp.json`, `agents/`, `extensions/`, `prompts/`, `supi/config.json` | Linked whole |
+| `models.json`, `agents/`, `extensions/`, `prompts/`, `supi/config.json` | Linked whole |
 | `skills/*`, `themes/*` | Each entry linked separately, so other tools can add their own |
 | Matt Pocock skills (grill-with-docs, handoff, improve-codebase-architecture, tdd) | Linked from a clone at `~/code/mattpocock/skills` (cloned if missing) |
-| `settings.json` | Merged, not linked: existing file, then `agent/settings.json` (shared), then `agent/settings.local.json` (this machine, gitignored) |
+| `settings.json`, `mcp.json` | Merged, not linked: existing file, then the shared file in `agent/`, then `agent/<name>.local.json` (this machine, gitignored) |
 
-Put per-machine settings (`theme`, `defaultModel`, `hideThinkingBlock`) in `agent/settings.local.json`. Settings changed from inside pi stay on that machine; copy them into `agent/settings.json` to share them.
+Put per-machine settings (`theme`, `defaultModel`, `hideThinkingBlock`) in `agent/settings.local.json`. To turn off a shared MCP server on one machine, add `"<name>": { "enabled": false }` under `mcpServers` in `agent/mcp.local.json`. Settings changed from inside pi stay on that machine; copy them into `agent/settings.json` to share them.
 
 Packages in `settings.json` (pi-clarity, supi-code-intelligence, context7, remote-pi) install automatically on first start.
 

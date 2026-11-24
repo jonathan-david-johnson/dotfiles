@@ -37,6 +37,7 @@
 
 # pi runtime data and setup backups (router logs contain prompts)
 .pi/agent/settings.local.json
+.pi/agent/mcp.local.json
 .pi/agent/models-store.json
 .pi/agent/pi-crash.log
 .pi/agent/model-router/

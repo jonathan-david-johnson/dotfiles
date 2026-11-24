@@ -103,7 +103,6 @@ if [[ -L "$HOME/.pi" || -L "$HOME/.pi/agent" ]]; then
   echo "skip    ~/.pi: it is a symlink (old layout). Move auth.json and sessions/ into a real ~/.pi/agent, remove the link, and re-run." >&2
 else
   link .pi/agent/models.json
-  link .pi/agent/mcp.json
   link .pi/agent/agents
   link .pi/agent/extensions
   link .pi/agent/prompts
@@ -111,6 +110,7 @@ else
   link_each .pi/agent/skills
   link_each .pi/agent/themes
   merge_json .pi/agent/settings.json .pi/agent/settings.json .pi/agent/settings.local.json
+  merge_json .pi/agent/mcp.json .pi/agent/mcp.json .pi/agent/mcp.local.json
 
   # Matt Pocock's skills: kept as links into a local clone
   pocock="$HOME/code/mattpocock/skills"
