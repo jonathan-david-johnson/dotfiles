@@ -49,6 +49,8 @@ retire .zshrc # unused: .zshenv sets ZDOTDIR=~/.config/zsh
 
 # --- OS-specific ------------------------------------------------------------
 case "$OS" in
-  Darwin) ;;
+  Darwin)
+    link .config/nvim # Linux (Omarchy) keeps its own LazyVim config
+    ;;
   Linux) ;;
 esac
