@@ -44,6 +44,7 @@ retire() {
 link .zshenv
 link .config/zsh
 link .config/fzf
+link .config/starship.toml
 retire .zshrc # unused: .zshenv sets ZDOTDIR=~/.config/zsh
 
 # --- OS-specific ------------------------------------------------------------
