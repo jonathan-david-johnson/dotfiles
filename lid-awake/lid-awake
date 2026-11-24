@@ -1,0 +1,28 @@
+#!/bin/bash
+# Keep the Mac awake with the lid closed only while on AC power.
+# `pmset -c disablesleep` does not scope per power source, so poll instead.
+# Runs as root via the LaunchDaemon. On exit, restore normal sleep.
+
+set -u
+trap 'pmset disablesleep 0; exit 0' TERM INT
+
+last=""
+while true; do
+  if pmset -g batt | head -1 | grep -q "AC Power"; then
+    want=1
+  else
+    want=0
+  fi
+  if [[ "$want" != "$last" ]]; then
+    pmset disablesleep "$want"
+    # Clearing the flag does not itself trigger sleep (macOS only re-evaluates
+    # on events like lid close). If we just lost AC with the lid already
+    # closed, sleep now.
+    if [[ "$want" == 0 && -n "$last" ]] \
+       && ioreg -r -k AppleClamshellState -d1 | grep -q '"AppleClamshellState" = Yes'; then
+      pmset sleepnow
+    fi
+    last="$want"
+  fi
+  sleep 5
+done

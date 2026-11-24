@@ -6,6 +6,9 @@ after-startup-command = [
   'exec-and-forget borders active_color=0xff7aa2f7 inactive_color=0xff414868 width=6.0'
 ]
 
+# Move the mouse pointer to the newly focused monitor
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+
 enable-normalization-flatten-containers = true
 enable-normalization-opposite-orientation-for-nested-containers = true
 accordion-padding = 30
